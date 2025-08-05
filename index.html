@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Avatar Builder Starter</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    .controls { margin-bottom: 10px; text-align: center; }
+    .controls label { margin: 0 5px; }
+    #canvas { border: 1px solid #ccc; display: block; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <label>Pattern: <select id="pattern-select"></select></label>
+    <label>Bottom: <select id="bottom-select"></select></label>
+    <label>Sneaker: <select id="sneaker-select"></select></label>
+    <label>Top: <select id="top-select"></select></label>
+    <label>Head: <select id="head-select"></select></label>
+    <label>Hair: <select id="hair-select"></select></label>
+    <label>Hat: <select id="hat-select"></select></label>
+    <label>Accessories: <select id="accessories-select"></select></label>
+    <button id="save-btn">Save as PNG</button>
+  </div>
+  <canvas id="canvas" width="1200" height="1200"></canvas>
+
+  <script>
+    // 1) Define your layer assets filenames (match folder names and files)
+    const layers = {
+      pattern: ['pattern1.png', 'pattern2.png'],
+      bottom: ['bottom1.png', 'bottom2.png'],
+      sneaker: ['sneaker1.png', 'sneaker2.png'],
+      top: ['top1.png', 'top2.png'],
+      head: ['head1.png', 'head2.png'],
+      hair: ['hair1.png', 'hair2.png'],
+      hat: ['hat1.png', 'hat2.png'],
+      accessories: ['accessories1.png', 'accessories2.png']
+    };
+
+    // Base path to your hosted assets folder (subfolders auto-included)
+    const imageBasePath = 'https://fullermoe.github.io/hypeheads-builder-assets/PNGs/';
+
+    // Draw layers in this order
+    const drawOrder = ['pattern','bottom','sneaker','top','head','hair','hat','accessories'];
+
+    const selections = {};
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Populate each dropdown and set initial selection
+    function populateSelect(layerKey) {
+      const select = document.getElementById(`${layerKey}-select`);
+      layers[layerKey].forEach(fileName => {
+        const opt = document.createElement('option');
+        opt.value = `${layerKey}/${fileName}`; // include subfolder
+        opt.textContent = fileName;
+        select.appendChild(opt);
+      });
+      selections[layerKey] = `${layerKey}/${layers[layerKey][0]}`;
+      select.value = selections[layerKey];
+      select.addEventListener('change', () => {
+        selections[layerKey] = select.value;
+        drawLayers();
+      });
+    }
+
+    // Draw chosen layers in order onto the canvas
+    function drawLayers() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawOrder.forEach(key => {
+        const path = selections[key];
+        if (!path) return;
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = imageBasePath + path;
+        img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      });
+    }
+
+    // Export the canvas as a PNG file
+    document.getElementById('save-btn').addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'avatar.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    // Initialize UI and draw
+    Object.keys(layers).forEach(populateSelect);
+    drawLayers();
+  </script>
+</body>
+</html>
