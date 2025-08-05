@@ -12,7 +12,6 @@
 </head>
 <body>
   <div class="controls">
-    <label>Pattern: <select id="pattern-select"></select></label>
     <label>Bottom: <select id="bottom-select"></select></label>
     <label>Sneaker: <select id="sneaker-select"></select></label>
     <label>Top: <select id="top-select"></select></label>
@@ -25,9 +24,8 @@
   <canvas id="canvas" width="1200" height="1200"></canvas>
 
   <script>
-    // 1) Define your layer assets filenames (match folder names and files)
+    // Define your layer assets filenames (match root subfolders and files)
     const layers = {
-      pattern: ['pattern1.png', 'pattern2.png'],
       bottom: ['bottom1.png', 'bottom2.png'],
       sneaker: ['sneaker1.png', 'sneaker2.png'],
       top: ['top1.png', 'top2.png'],
@@ -37,11 +35,11 @@
       accessories: ['accessories1.png', 'accessories2.png']
     };
 
-    // Base path to your hosted assets folder (subfolders auto-included)
-    const imageBasePath = 'https://fullermoe.github.io/hypeheads-builder-assets/PNGs/';
+    // Base path to your hosted assets (root of repo)
+    const imageBasePath = 'https://fullermoe.github.io/hypeheads-builder-assets/';
 
     // Draw layers in this order
-    const drawOrder = ['pattern','bottom','sneaker','top','head','hair','hat','accessories'];
+    const drawOrder = ['bottom','sneaker','top','head','hair','hat','accessories'];
 
     const selections = {};
     const canvas = document.getElementById('canvas');
@@ -52,7 +50,7 @@
       const select = document.getElementById(`${layerKey}-select`);
       layers[layerKey].forEach(fileName => {
         const opt = document.createElement('option');
-        opt.value = `${layerKey}/${fileName}`; // include subfolder
+        opt.value = `${layerKey}/${fileName}`;
         opt.textContent = fileName;
         select.appendChild(opt);
       });
